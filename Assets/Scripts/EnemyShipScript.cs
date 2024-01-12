@@ -64,7 +64,7 @@ public class EnemyShipScript : MonoBehaviour
         if (player_bullet)
         {
             DeleteObject(player_bullet);
-            StageLoop.Instance.AddScore(m_score);
+            //StageLoop.Instance.AddScore(m_score);
         }
         else
         {

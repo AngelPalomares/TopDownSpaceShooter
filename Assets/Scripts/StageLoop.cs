@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
 
 /// <summary>
 /// Stage main loop
 /// </summary>
-public class StageLoop : MonoBehaviour
+public class StageLoop : MonoBehaviourPunCallbacks
 {
 	#region static 
 	static public StageLoop Instance { get; private set; }
@@ -27,6 +29,9 @@ public class StageLoop : MonoBehaviour
     float TimebtwSpawns;
     public Transform[] Spawnpoints;
 	public GameObject Enemy;
+	public GameObject Player;
+
+	public float Minx, Miny, Maxx, Maxy;
 
     //
     int m_game_score = 0;
@@ -72,30 +77,29 @@ public class StageLoop : MonoBehaviour
 
 		//create player
 		{
-			Player player = Instantiate(m_prefab_player, m_stage_transform);
-			if (player)
-			{
-				player.transform.position = new Vector3(0, -4, 0);
-				player.StartRunning();
-			}
+            Vector2 randomPosition = new Vector2(Random.Range(Minx, Maxx), Random.Range(Miny, Maxy));
+            PhotonNetwork.Instantiate(Player.name, randomPosition,Quaternion.identity);
+
 		}
 
 		//create enemy spawner
 		{
 			
 			{
-
-                if (TimebtwSpawns <= 0)
-                {
-                    Vector3 SpawnPosition = Spawnpoints[Random.Range(0, Spawnpoints.Length)].position;
-                    //PhotonNetwork.Instantiate(Enemy.name, SpawnPosition, Quaternion.identity);
-                    Instantiate(Enemy, SpawnPosition, Quaternion.identity);
-                    TimebtwSpawns = StartTimeBtwSpawns;
-                }
-                else
-                {
-                    TimebtwSpawns -= Time.deltaTime;
-                }
+				if (m_title_loop.StarttheGame == true)
+				{
+					if (TimebtwSpawns <= 0)
+					{
+						Vector3 SpawnPosition = Spawnpoints[Random.Range(0, Spawnpoints.Length)].position;
+						PhotonNetwork.Instantiate(Enemy.name, SpawnPosition, Quaternion.identity);
+						//Instantiate(Enemy, SpawnPosition, Quaternion.identity);
+						TimebtwSpawns = StartTimeBtwSpawns;
+					}
+					else
+					{
+						TimebtwSpawns -= Time.deltaTime;
+					}
+				}
                 //EnemySpawner spawner = Instantiate(m_prefab_enemy_spawner, m_stage_transform);
                 /*
 				if (spawner)
@@ -121,10 +125,11 @@ public class StageLoop : MonoBehaviour
     {
         if (TimebtwSpawns <= 0)
         {
+            Vector2 randomPosition = new Vector2(Random.Range(Minx, Maxx), Random.Range(Miny, Maxy));
             Quaternion spawnRotation = Quaternion.Euler(90, 90, 90);
             Vector3 SpawnPosition = Spawnpoints[Random.Range(0, Spawnpoints.Length)].position;
-            //PhotonNetwork.Instantiate(Enemy.name, SpawnPosition, Quaternion.identity);
-            Instantiate(Enemy, SpawnPosition, spawnRotation);
+            PhotonNetwork.Instantiate(Enemy.name, SpawnPosition, Quaternion.identity);
+            //Instantiate(Enemy, SpawnPosition, spawnRotation);
             TimebtwSpawns = StartTimeBtwSpawns;
         }
         else

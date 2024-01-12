@@ -23,6 +23,11 @@ public class Spawners : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(PhotonNetwork.IsMasterClient == false|| PhotonNetwork.CurrentRoom.PlayerCount != 2)
+        {
+            return;
+        }
+
         SpawnTheEnemies();
     }
 

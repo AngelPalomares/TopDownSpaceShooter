@@ -1,60 +1,74 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyShipScript : MonoBehaviour
 {
-    public Transform playerTransform; // Assign this in the inspector or find it dynamically
-    public float moveSpeed = 5f; // How fast the enemy moves towards the player
+    public Transform[] playerTransforms; // Assign this in the inspector with both player transforms
+
+    public float moveSpeed = 5f;
     public int m_score = 100;
+
+    private Transform targetPlayerTransform; // To keep track of the nearest player
 
     private void Start()
     {
-        // If the playerTransform is not assigned, find the player by tag or name
-        if (playerTransform == null)
+        // Find players dynamically if not assigned
+        if (playerTransforms == null || playerTransforms.Length == 0)
         {
-            GameObject player = GameObject.FindGameObjectWithTag("Player"); // Make sure your player has the "Player" tag
-            if (player != null)
-            {
-                playerTransform = player.transform;
-            }
-            RotateTowardsPlayer();
+            playerTransforms = FindObjectsOfType<Player>().Select(player => player.transform).ToArray();
         }
+        // Initially set the target player
+        FindNearestPlayer();
     }
 
     private void Update()
     {
-        if (playerTransform != null)
+        if (playerTransforms != null && playerTransforms.Length > 0)
         {
-            // Calculate the movement vector in the X and Y direction (assuming Y is up/down in your game's coordinate system)
-            Vector3 directionToPlayer = (new Vector3(playerTransform.position.x, playerTransform.position.y, transform.position.z) - transform.position).normalized;
+            FindNearestPlayer(); // Update the nearest player each frame
 
-            // Move the enemy towards the player on the X and Y axes
-            transform.position += new Vector3(directionToPlayer.x, directionToPlayer.y, 0) * moveSpeed * Time.deltaTime;
-
-            // Rotate to face the player, considering only the X axis rotation
-            RotateTowardsPlayer();
+            if (targetPlayerTransform != null)
+            {
+                // Move towards the nearest player
+                MoveTowardsTargetPlayer();
+            }
         }
+    }
+
+    private void FindNearestPlayer()
+    {
+        float minDistance = float.MaxValue;
+        foreach (var player in playerTransforms)
+        {
+            float distance = Vector3.Distance(transform.position, player.position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                targetPlayerTransform = player;
+            }
+        }
+    }
+
+    private void MoveTowardsTargetPlayer()
+    {
+        Vector3 directionToPlayer = (new Vector3(targetPlayerTransform.position.x, targetPlayerTransform.position.y, transform.position.z) - transform.position).normalized;
+        transform.position += new Vector3(directionToPlayer.x, directionToPlayer.y, 0) * moveSpeed * Time.deltaTime;
+        RotateTowardsPlayer();
     }
 
     private void RotateTowardsPlayer()
     {
-        Vector3 direction = new Vector3(playerTransform.position.x, playerTransform.position.y, transform.position.z) - transform.position;
-
-        // Ensure the direction vector is not zero before creating a rotation
+        Vector3 direction = new Vector3(targetPlayerTransform.position.x, targetPlayerTransform.position.y, transform.position.z) - transform.position;
         if (direction.sqrMagnitude > 0f)
         {
-
             Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
-
-
             transform.rotation = lookRotation;
-
-
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 90);
         }
-
     }
+
 
     private void OnCollisionEnter(Collision collision)
     {

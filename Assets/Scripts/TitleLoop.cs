@@ -8,6 +8,7 @@ using UnityEngine;
 public class TitleLoop : MonoBehaviour
 {
 	public StageLoop m_stage_loop;
+	public bool StarttheGame = false;
 
 	[Header("Layout")]
 	public Transform m_ui_title;
@@ -41,11 +42,15 @@ public class TitleLoop : MonoBehaviour
 		{
 			if (Input.GetKeyDown(KeyCode.Space))
 			{
-				CleanupTitle();
+				StarttheGame = true;
+				if(StarttheGame == true)
+				{
+                    CleanupTitle();
 
-				//Start StageLoop
-				m_stage_loop.StartStageLoop();
-				yield break;
+                    //Start StageLoop
+                    m_stage_loop.StartStageLoop();
+                    yield break;
+                }
 			}
 			yield return null;
 		}

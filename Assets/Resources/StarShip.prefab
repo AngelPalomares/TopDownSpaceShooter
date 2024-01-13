@@ -367,6 +367,10 @@ MonoBehaviour:
   PlayerHealth: 4
   MaxPlayerHealth: 4
   AmounttoHealh: 10
+  Minx: -7.95
+  Miny: -4.08
+  Maxx: 7.99
+  Maxy: 3.99
 --- !u!135 &5787161861011307996
 SphereCollider:
   m_ObjectHideFlags: 0

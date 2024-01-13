@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Spawners : MonoBehaviour
 {
@@ -30,14 +31,24 @@ public class Spawners : MonoBehaviour
     void Update()
     {
 
-        if(PhotonNetwork.IsMasterClient == false|| PhotonNetwork.CurrentRoom.PlayerCount != 2)
+        if (SinglePlayer.instance.Singleplayer)
         {
-            return;
+             SpawnTheEnemies();
+             SpawnThePowerups();
+            
+            return; // Exit if it's single-player mode
         }
 
+        if (PhotonNetwork.IsMasterClient && !PhotonNetwork.CurrentRoom.IsOpen)
+        {
+            // Check if there are exactly two players in the room
+            if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
+            {
+                SpawnTheEnemies();
+                SpawnThePowerups();
+            }
+        }
 
-        SpawnTheEnemies();
-        SpawnThePowerups();
     }
 
     public void SpawnTheEnemies()

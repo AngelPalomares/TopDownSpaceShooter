@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
-using Photon.Pun;
+
 
 public class HealthPickup : MonoBehaviourPunCallbacks
 {
@@ -15,6 +15,16 @@ public class HealthPickup : MonoBehaviourPunCallbacks
         if(other.tag == "Player")
         {
             player.HealThePlayer();
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        EnemyShipScript enemy = collision.transform.GetComponent<EnemyShipScript>();
+
+        if (enemy)
+        {
+            photonView.RPC("DestroyHealthPickup", RpcTarget.MasterClient);
         }
     }
 

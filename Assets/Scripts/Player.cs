@@ -16,6 +16,8 @@ public class Player : MonoBehaviourPunCallbacks
 
     public float AmounttoHealh;
 
+    public float Minx, Miny, Maxx, Maxy;
+
     public void Start()
     {
         PlayerHealth = MaxPlayerHealth;
@@ -46,9 +48,15 @@ public class Player : MonoBehaviourPunCallbacks
                 float verticalInput = Input.GetAxis("Vertical");
                 float horizontalInput = Input.GetAxis("Horizontal");
                 Vector3 movement = (transform.forward * verticalInput + transform.right * horizontalInput).normalized * m_move_speed * Time.deltaTime;
+            // Apply movement
+            Vector3 newPosition = transform.position + movement;
 
-                // Apply movement
-                transform.position += movement;
+            // Clamp the new position within the defined boundaries
+            newPosition.x = Mathf.Clamp(newPosition.x, Minx, Maxx);
+            newPosition.y = Mathf.Clamp(newPosition.y, Miny, Maxy);
+
+            // Update the player's position
+            transform.position = newPosition;
 
             // Shoot
             if (Input.GetMouseButtonUp(0))

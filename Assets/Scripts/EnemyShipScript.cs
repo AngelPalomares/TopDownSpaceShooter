@@ -46,7 +46,8 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
         Transform nearestPlayer = null;
         foreach (var player in playerTransforms)
         {
-            if (player.gameObject.activeSelf) // Check if the player is active
+            // Check if the player is active and the transform reference is still valid
+            if (player != null && player.gameObject.activeSelf)
             {
                 float distance = Vector3.Distance(transform.position, player.position);
                 if (distance < minDistance)
@@ -58,6 +59,7 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
         }
         targetPlayerTransform = nearestPlayer; // Update the target player
     }
+
 
     [PunRPC]
     public void PlayDeathSound()
@@ -77,19 +79,27 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
 
     private void MoveTowardsTargetPlayer()
     {
-        Vector3 directionToPlayer = (new Vector3(targetPlayerTransform.position.x, targetPlayerTransform.position.y, transform.position.z) - transform.position).normalized;
-        transform.position += new Vector3(directionToPlayer.x, directionToPlayer.y, 0) * moveSpeed * Time.deltaTime;
-        RotateTowardsPlayer();
+        // Check if the target player transform is still valid
+        if (targetPlayerTransform != null)
+        {
+            Vector3 directionToPlayer = (new Vector3(targetPlayerTransform.position.x, targetPlayerTransform.position.y, transform.position.z) - transform.position).normalized;
+            transform.position += new Vector3(directionToPlayer.x, directionToPlayer.y, 0) * moveSpeed * Time.deltaTime;
+            RotateTowardsPlayer();
+        }
     }
 
     private void RotateTowardsPlayer()
     {
-        Vector3 direction = new Vector3(targetPlayerTransform.position.x, targetPlayerTransform.position.y, transform.position.z) - transform.position;
-        if (direction.sqrMagnitude > 0f)
+        // Check if the target player transform is still valid
+        if (targetPlayerTransform != null)
         {
-            Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
-            transform.rotation = lookRotation;
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 90);
+            Vector3 direction = new Vector3(targetPlayerTransform.position.x, targetPlayerTransform.position.y, transform.position.z) - transform.position;
+            if (direction.sqrMagnitude > 0f)
+            {
+                Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
+                transform.rotation = lookRotation;
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 90);
+            }
         }
     }
 }

@@ -74,6 +74,12 @@ public class Spawners : MonoBehaviourPunCallbacks
         {
             Vector3 SpawnPosition = Spawnpoints[Random.Range(0, Spawnpoints.Length)].position;
             PhotonNetwork.Instantiate(Enemy.name, SpawnPosition, Quaternion.identity);
+
+            if(PhotonNetwork.CurrentRoom.PlayerCount == 2)
+            {
+                Vector3 SpawnPosition2 = Spawnpoints[Random.Range(0, Spawnpoints.Length)].position;
+                PhotonNetwork.Instantiate(Enemy.name, SpawnPosition2, Quaternion.identity);
+            }
             TimebtwSpawns = StartTimeBtwSpawns;
         }
         else

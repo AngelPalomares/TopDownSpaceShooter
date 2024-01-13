@@ -8,7 +8,7 @@ using System;
 
 public class Multiplayer : MonoBehaviourPunCallbacks
 {
-    public TMP_InputField CreateInput, JoinINput;
+    public TMP_InputField CreateInput, JoinINput, NameInput;
 
     public GameObject SinglePlayerPanel,MultiplayerPanel;
 
@@ -22,6 +22,11 @@ public class Multiplayer : MonoBehaviourPunCallbacks
     void Update()
     {
         
+    }
+
+    public void Inputyourname()
+    {
+        PhotonNetwork.NickName = NameInput.text;
     }
 
     public void CreatetheRoom()

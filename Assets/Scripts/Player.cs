@@ -2,6 +2,8 @@ using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
+using TMPro;
 
 public class Player : MonoBehaviourPunCallbacks
 {
@@ -18,38 +20,77 @@ public class Player : MonoBehaviourPunCallbacks
 
     public float Minx, Miny, Maxx, Maxy;
 
+    private float damageCooldown = 1.0f; // Cooldown time in seconds
+    private float lastDamageTime = 0; // Time when last damage was taken
+
+    public MeshRenderer playerMeshRenderer; // Reference to the player's mesh renderer
+    public Color hitColor = Color.red; // Color to flash when hit
+    private Color originalColor; // To store the original color
+
+    public Canvas ui;
+    public TMP_Text Name;
+
     public void Start()
     {
+
+        ui.worldCamera = Camera.main;
+
+
         PlayerHealth = MaxPlayerHealth;
-        UICanvas.instance.HealthSlider.fillAmount = (float)PlayerHealth / (float)MaxPlayerHealth;
-        UICanvas.instance.Health.text = "Health :"+ PlayerHealth.ToString();
+        if (photonView.IsMine)
+        {
+            Name.text = PhotonNetwork.NickName;
+            UICanvas.instance.HealthSlider.fillAmount = (float)PlayerHealth / (float)MaxPlayerHealth;
+            UICanvas.instance.Health.text = "Health :" + PlayerHealth.ToString();
+        }
+        else
+        {
+            Name.text = photonView.Owner.NickName;
+        }
     }
 
     private void Update()
     {
-        PlayerMovement();
+        if (photonView.IsMine)
+        {
+            PlayerMovement();
+            UpdateUI();
+            UpdateTextRotation();
+        }
     }
 
+    private void UpdateTextRotation()
+    {
+        // Assuming the camera is always looking down and only rotates around the Y-axis
+        Vector3 cameraRotation = Camera.main.transform.rotation.eulerAngles;
+        Name.transform.rotation = Quaternion.Euler(0, cameraRotation.y, 0);
+    }
+
+
+    private void UpdateUI()
+    {
+        UICanvas.instance.HealthSlider.fillAmount = (float)PlayerHealth / (float)MaxPlayerHealth;
+        UICanvas.instance.Health.text = "Health :" + PlayerHealth.ToString();
+    }
 
     public void PlayerMovement()
     {
         if (photonView.IsMine)
         {
-                // Look at cursor in 2D mode
-                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane));
-                mousePosition.z = transform.position.z; // Keep the z-position consistent with the player's z-position
-                Vector3 lookDirection = mousePosition - transform.position;
-                if (lookDirection.sqrMagnitude > 0.01f) // Check to avoid LookAt when mouse is very close to player
-                {
-                    transform.LookAt(mousePosition);
-                    transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 90); // Maintain z-rotation at 90 degrees
-                }
+            // Look at cursor in 2D mode
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane));
+            mousePosition.z = transform.position.z; // Keep the z-position consistent with the player's z-position
+            Vector3 lookDirection = mousePosition - transform.position;
+            if (lookDirection.sqrMagnitude > 0.01f) // Check to avoid LookAt when mouse is very close to player
+            {
+                transform.LookAt(mousePosition);
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 90); // Maintain z-rotation at 90 degrees
+            }
 
-   
-                float verticalInput = Input.GetAxis("Vertical");
-                float horizontalInput = Input.GetAxis("Horizontal");
-                Vector3 movement = (transform.forward * verticalInput + transform.right * horizontalInput).normalized * m_move_speed * Time.deltaTime;
- 
+            float verticalInput = Input.GetAxis("Vertical");
+            float horizontalInput = Input.GetAxis("Horizontal");
+            Vector3 movement = (transform.forward * verticalInput + transform.right * horizontalInput).normalized * m_move_speed * Time.deltaTime;
+
             Vector3 newPosition = transform.position + movement;
 
             newPosition.x = Mathf.Clamp(newPosition.x, Minx, Maxx);
@@ -66,22 +107,64 @@ public class Player : MonoBehaviourPunCallbacks
         }
     }
 
+
     [PunRPC]
     public void DestroyByPlayer()
     {
-        PlayerHealth--;
-        UICanvas.instance.HealthSlider.fillAmount = (float)PlayerHealth / (float)MaxPlayerHealth;
-        if (photonView.IsMine)
+        if (Time.time - lastDamageTime > damageCooldown)
         {
-            UICanvas.instance.Health.text = "Health :" + PlayerHealth.ToString();
-        }
+            lastDamageTime = Time.time;
 
-        if (PlayerHealth <= 0)
-        {
-            // Call an RPC to deactivate the player on all clients
-            photonView.RPC("DeactivatePlayer", RpcTarget.AllBuffered);
+            if (photonView.IsMine)
+            {
+                PlayerHealth--;
+                UpdateUI();
+
+                if (PlayerHealth <= 0)
+                {
+                    photonView.RPC("DeactivatePlayer", RpcTarget.AllBuffered);
+                }
+            }
+
+            photonView.RPC("FlashPlayer", RpcTarget.All);
         }
     }
+
+
+    [PunRPC]
+    public void FlashPlayer()
+    {
+        StartCoroutine(FlashOnHit());
+    }
+
+    private IEnumerator FlashOnHit()
+    {
+        int numFlashes = 5;
+        float flashDelay = 0.1f;
+
+        for (int i = 0; i < numFlashes; i++)
+        {
+            photonView.RPC("ToggleRenderer", RpcTarget.All);
+            yield return new WaitForSeconds(flashDelay);
+        }
+
+        photonView.RPC("EnsureRendererEnabled", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void ToggleRenderer()
+    {
+        Debug.Log("ToggleRenderer called on: " + photonView.Owner.NickName);
+        playerMeshRenderer.enabled = !playerMeshRenderer.enabled;
+    }
+
+    [PunRPC]
+    void EnsureRendererEnabled()
+    {
+        Debug.Log("EnsureRendererEnabled called on: " + photonView.Owner.NickName);
+        playerMeshRenderer.enabled = true;
+    }
+
 
     [PunRPC]
     public void DeactivatePlayer()
@@ -92,12 +175,10 @@ public class Player : MonoBehaviourPunCallbacks
     [PunRPC]
     public void HealThePlayer()
     {
-        if(photonView.IsMine)
+        if (photonView.IsMine)
         {
-            PlayerHealth += AmounttoHealh;
-            PlayerHealth = Mathf.Min(PlayerHealth, MaxPlayerHealth); // Prevent overhealing
             PlayerHealth = MaxPlayerHealth;
-            UICanvas.instance.HealthSlider.fillAmount = (float)PlayerHealth / (float)MaxPlayerHealth;
+            UpdateUI();
         }
     }
 
@@ -113,7 +194,6 @@ public class Player : MonoBehaviourPunCallbacks
         else if (other.tag == "Health" && photonView.IsMine)
         {
             photonView.RPC("HealThePlayer", RpcTarget.All);
-            // Request the MasterClient to destroy the health pickup
             other.gameObject.GetComponent<HealthPickup>().photonView.RPC("DestroyHealthPickup", RpcTarget.MasterClient);
         }
     }

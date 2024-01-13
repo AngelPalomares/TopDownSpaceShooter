@@ -10,6 +10,8 @@ public class UICanvas : MonoBehaviour
     public Text HighScore;
     public Text Health;
 
+    public Image HealthSlider;
+
     public float High;
 
     private void Awake()

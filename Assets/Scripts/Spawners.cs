@@ -4,16 +4,16 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Spawners : MonoBehaviour
+public class Spawners : MonoBehaviourPunCallbacks
 {
     [Header("Enemy ")]
     public float StartTimeBtwSpawns;
-    float TimebtwSpawns;
+    private float TimebtwSpawns;
     public Transform[] Spawnpoints;
 
     public Transform[] PowerupSpawnPoints;
     public float StartHealthBtwSpawns;
-    float HealthbtwSpawns;
+    private float HealthbtwSpawns;
     public GameObject Health;
 
     public GameObject Enemy;
@@ -21,57 +21,74 @@ public class Spawners : MonoBehaviour
     [Header("Player")]
     public GameObject Player;
     public float Minx, Miny, Maxx, Maxy;
-    // Start is called before the first frame update
+
+    private bool gameStarted = false;
+
     void Start()
     {
         SpawnThePlayer();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
         if (SinglePlayer.instance.Singleplayer)
         {
-             SpawnTheEnemies();
-             SpawnThePowerups();
-            
-            return; // Exit if it's single-player mode
+            StartGame();
         }
-
-        if (PhotonNetwork.IsMasterClient && !PhotonNetwork.CurrentRoom.IsOpen)
-        {
-            // Check if there are exactly two players in the room
-            if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
-            {
-                SpawnTheEnemies();
-                SpawnThePowerups();
-            }
-        }
-
     }
 
-    public void SpawnTheEnemies()
+    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
-
-            if (TimebtwSpawns <= 0)
-            {
-                Vector3 SpawnPosition = Spawnpoints[Random.Range(0, Spawnpoints.Length)].position;
-                PhotonNetwork.Instantiate(Enemy.name, SpawnPosition, Quaternion.identity);
-                TimebtwSpawns = StartTimeBtwSpawns;
-            }
-            else
-            {
-                TimebtwSpawns -= Time.deltaTime;
-            }
+        StartGameIfReady();
     }
 
-    public void SpawnThePowerups()
+    private void StartGameIfReady()
+    {
+        if (!SinglePlayer.instance.Singleplayer && PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == 2 && !gameStarted)
+        {
+            StartGame();
+        }
+    }
+
+    private void StartGame()
+    {
+        gameStarted = true;
+    }
+
+    void Update()
+    {
+        if (gameStarted)
+        {
+            if (SinglePlayer.instance.Singleplayer)
+            {
+                UpdateEnemySpawn();
+                UpdatePowerupSpawn();
+            }
+            else if (PhotonNetwork.IsMasterClient)
+            {
+                UpdateEnemySpawn();
+                UpdatePowerupSpawn();
+            }
+        }
+    }
+
+    private void UpdateEnemySpawn()
+    {
+        if (TimebtwSpawns <= 0)
+        {
+            Vector3 SpawnPosition = Spawnpoints[Random.Range(0, Spawnpoints.Length)].position;
+            PhotonNetwork.Instantiate(Enemy.name, SpawnPosition, Quaternion.identity);
+            TimebtwSpawns = StartTimeBtwSpawns;
+        }
+        else
+        {
+            TimebtwSpawns -= Time.deltaTime;
+        }
+    }
+
+    private void UpdatePowerupSpawn()
     {
         if (HealthbtwSpawns <= 0)
         {
             Vector3 SpawnPosition = PowerupSpawnPoints[Random.Range(0, PowerupSpawnPoints.Length)].position;
-            PhotonNetwork.Instantiate(Health.name, SpawnPosition, Quaternion.identity);
+            Quaternion spawnRotation = Quaternion.Euler(0, -180, 0); // Set the y-rotation to -180 degrees
+            PhotonNetwork.Instantiate(Health.name, SpawnPosition, spawnRotation);
             HealthbtwSpawns = StartHealthBtwSpawns;
         }
         else

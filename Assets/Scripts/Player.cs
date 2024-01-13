@@ -21,6 +21,7 @@ public class Player : MonoBehaviourPunCallbacks
     public void Start()
     {
         PlayerHealth = MaxPlayerHealth;
+        UICanvas.instance.HealthSlider.fillAmount = (float)PlayerHealth / (float)MaxPlayerHealth;
         UICanvas.instance.Health.text = "Health :"+ PlayerHealth.ToString();
     }
 
@@ -68,19 +69,24 @@ public class Player : MonoBehaviourPunCallbacks
     [PunRPC]
     public void DestroyByPlayer()
     {
-        // Ensure that the RPC affects only the player that owns this PhotonView
+        PlayerHealth--;
+        UICanvas.instance.HealthSlider.fillAmount = (float)PlayerHealth / (float)MaxPlayerHealth;
         if (photonView.IsMine)
         {
-            PlayerHealth--;
             UICanvas.instance.Health.text = "Health :" + PlayerHealth.ToString();
-
-            if (PlayerHealth <= 0)
-            {
-                // Instead of destroying, set the gameObject to inactive
-                gameObject.SetActive(false);
-            }
         }
 
+        if (PlayerHealth <= 0)
+        {
+            // Call an RPC to deactivate the player on all clients
+            photonView.RPC("DeactivatePlayer", RpcTarget.AllBuffered);
+        }
+    }
+
+    [PunRPC]
+    public void DeactivatePlayer()
+    {
+        gameObject.SetActive(false);
     }
 
     [PunRPC]
@@ -90,7 +96,8 @@ public class Player : MonoBehaviourPunCallbacks
         {
             PlayerHealth += AmounttoHealh;
             PlayerHealth = Mathf.Min(PlayerHealth, MaxPlayerHealth); // Prevent overhealing
-            UICanvas.instance.Health.text = "Health :" + PlayerHealth.ToString();
+            PlayerHealth = MaxPlayerHealth;
+            UICanvas.instance.HealthSlider.fillAmount = (float)PlayerHealth / (float)MaxPlayerHealth;
         }
     }
 

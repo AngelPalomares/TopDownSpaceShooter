@@ -8,6 +8,7 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
 {
     public Transform[] playerTransforms; // Assign this in the inspector with both player transforms
     public float moveSpeed = 5f;
+    public AudioClip DeathSound;
 
     private Transform targetPlayerTransform; // To keep track of the nearest player
 
@@ -16,7 +17,10 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
         // Find players dynamically if not assigned
         if (playerTransforms == null || playerTransforms.Length == 0)
         {
-            playerTransforms = FindObjectsOfType<Player>().Select(player => player.transform).ToArray();
+            playerTransforms = FindObjectsOfType<Player>()
+                .Where(player => player.gameObject.activeSelf) // Only consider active players
+                .Select(player => player.transform)
+                .ToArray();
         }
         // Initially set the target player
         FindNearestPlayer();
@@ -39,15 +43,26 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
     private void FindNearestPlayer()
     {
         float minDistance = float.MaxValue;
+        Transform nearestPlayer = null;
         foreach (var player in playerTransforms)
         {
-            float distance = Vector3.Distance(transform.position, player.position);
-            if (distance < minDistance)
+            if (player.gameObject.activeSelf) // Check if the player is active
             {
-                minDistance = distance;
-                targetPlayerTransform = player;
+                float distance = Vector3.Distance(transform.position, player.position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    nearestPlayer = player;
+                }
             }
         }
+        targetPlayerTransform = nearestPlayer; // Update the target player
+    }
+
+    [PunRPC]
+    public void PlayDeathSound()
+    {
+        AudioSource.PlayClipAtPoint(DeathSound, transform.position);
     }
 
     [PunRPC]
@@ -55,6 +70,7 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
+            photonView.RPC("PlayDeathSound", RpcTarget.All);
             PhotonNetwork.Destroy(gameObject);
         }
     }
@@ -76,8 +92,4 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 90);
         }
     }
-
-
-
-
 }

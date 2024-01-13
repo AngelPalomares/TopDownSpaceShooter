@@ -1110,8 +1110,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CreateInput: {fileID: 2142870761}
   JoinINput: {fileID: 893743535}
-  SinglePlayerPanel: {fileID: 0}
-  MultiplayerPanel: {fileID: 0}
+  SinglePlayerPanel: {fileID: 1729863572}
+  MultiplayerPanel: {fileID: 31513515}
 --- !u!4 &680791186
 Transform:
   m_ObjectHideFlags: 0
@@ -2037,7 +2037,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 680791185}
         m_TargetAssemblyTypeName: Multiplayer, Assembly-CSharp
-        m_MethodName: JoinRoom
+        m_MethodName: OpenMultiplayer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

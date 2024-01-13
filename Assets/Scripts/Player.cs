@@ -44,18 +44,16 @@ public class Player : MonoBehaviourPunCallbacks
                     transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 90); // Maintain z-rotation at 90 degrees
                 }
 
-                // Calculate movement based on key inputs and ship's orientation
+   
                 float verticalInput = Input.GetAxis("Vertical");
                 float horizontalInput = Input.GetAxis("Horizontal");
                 Vector3 movement = (transform.forward * verticalInput + transform.right * horizontalInput).normalized * m_move_speed * Time.deltaTime;
-            // Apply movement
+ 
             Vector3 newPosition = transform.position + movement;
 
-            // Clamp the new position within the defined boundaries
             newPosition.x = Mathf.Clamp(newPosition.x, Minx, Maxx);
             newPosition.y = Mathf.Clamp(newPosition.y, Miny, Maxy);
 
-            // Update the player's position
             transform.position = newPosition;
 
             // Shoot

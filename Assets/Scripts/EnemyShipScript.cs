@@ -2,15 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Photon.Realtime;
 using Photon.Pun;
 
 public class EnemyShipScript : MonoBehaviourPunCallbacks
 {
     public Transform[] playerTransforms; // Assign this in the inspector with both player transforms
-
     public float moveSpeed = 5f;
-    public float m_score = 100;
 
     private Transform targetPlayerTransform; // To keep track of the nearest player
 
@@ -53,6 +50,15 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
         }
     }
 
+    [PunRPC]
+    public void RequestDestruction()
+    {
+        if (photonView.IsMine)
+        {
+            PhotonNetwork.Destroy(gameObject);
+        }
+    }
+
     private void MoveTowardsTargetPlayer()
     {
         Vector3 directionToPlayer = (new Vector3(targetPlayerTransform.position.x, targetPlayerTransform.position.y, transform.position.z) - transform.position).normalized;
@@ -72,42 +78,6 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
     }
 
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        PlayerBullet player_bullet = collision.transform.GetComponent<PlayerBullet>();
-
-        if (player_bullet != null)
-        {
-            if (player_bullet)
-            {
-                PhotonNetwork.Destroy(player_bullet.gameObject);
-                photonView.RPC("GivePoints", RpcTarget.All);
-            }
-            PhotonNetwork.Destroy(gameObject);
-        }
-        else if (ShouldDestroyOnCollision(collision))
-        {
-            PhotonNetwork.Destroy(gameObject);
-        }
-    }
-
-    private bool ShouldDestroyOnCollision(Collision collision)
-    {
-        return collision.gameObject.CompareTag("Enemy");
-    }
 
 
-
-    public void DeleteObject(PlayerBullet bullet)
-    {
-        GameObject.Destroy(bullet);
-        Destroy(gameObject);
-    }
-
-    [PunRPC]
-    public void GivePoints()
-    {
-        UICanvas.instance.High += m_score;
-        UICanvas.instance.HighScore.text = "HighScore: " + UICanvas.instance.High.ToString();
-    }
 }

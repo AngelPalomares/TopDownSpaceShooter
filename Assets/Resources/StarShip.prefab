@@ -366,6 +366,7 @@ MonoBehaviour:
   bulletSpeed: 10
   PlayerHealth: 4
   MaxPlayerHealth: 4
+  AmounttoHealh: 10
 --- !u!135 &5787161861011307996
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -381,7 +382,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

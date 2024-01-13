@@ -42,6 +42,9 @@ MonoBehaviour:
   - GivePoints
   - DestroyByPlayer
   - DamageThePlayer
+  - HealThePlayer
+  - RequestDestruction
+  - DestroyHealthPickup
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

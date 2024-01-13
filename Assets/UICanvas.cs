@@ -8,6 +8,7 @@ public class UICanvas : MonoBehaviour
 {
     public static UICanvas instance;
     public Text HighScore;
+    public Text Health;
 
     public float High;
 

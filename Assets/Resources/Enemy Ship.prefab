@@ -111,7 +111,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerTransforms: []
   moveSpeed: 5
-  m_score: 100
 --- !u!54 &-3557332427860060450
 Rigidbody:
   m_ObjectHideFlags: 0

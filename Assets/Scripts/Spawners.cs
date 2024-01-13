@@ -9,6 +9,12 @@ public class Spawners : MonoBehaviour
     public float StartTimeBtwSpawns;
     float TimebtwSpawns;
     public Transform[] Spawnpoints;
+
+    public Transform[] PowerupSpawnPoints;
+    public float StartHealthBtwSpawns;
+    float HealthbtwSpawns;
+    public GameObject Health;
+
     public GameObject Enemy;
 
     [Header("Player")]
@@ -23,12 +29,15 @@ public class Spawners : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if(PhotonNetwork.IsMasterClient == false|| PhotonNetwork.CurrentRoom.PlayerCount != 2)
         {
             return;
         }
 
+
         SpawnTheEnemies();
+        SpawnThePowerups();
     }
 
     public void SpawnTheEnemies()
@@ -44,6 +53,20 @@ public class Spawners : MonoBehaviour
             {
                 TimebtwSpawns -= Time.deltaTime;
             }
+    }
+
+    public void SpawnThePowerups()
+    {
+        if (HealthbtwSpawns <= 0)
+        {
+            Vector3 SpawnPosition = PowerupSpawnPoints[Random.Range(0, PowerupSpawnPoints.Length)].position;
+            PhotonNetwork.Instantiate(Health.name, SpawnPosition, Quaternion.identity);
+            HealthbtwSpawns = StartHealthBtwSpawns;
+        }
+        else
+        {
+            HealthbtwSpawns -= Time.deltaTime;
+        }
     }
 
     public void SpawnThePlayer()

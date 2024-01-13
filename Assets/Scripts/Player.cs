@@ -12,11 +12,14 @@ public class Player : MonoBehaviourPunCallbacks
     public float m_move_speed = 1;
     public float bulletSpeed = 10f; // Bullet speed
     public float PlayerHealth = 4;
-    public float MaxPlayerHealth = 4;
+    public float MaxPlayerHealth = 10;
+
+    public float AmounttoHealh;
 
     public void Start()
     {
         PlayerHealth = MaxPlayerHealth;
+        UICanvas.instance.Health.text = "Health :"+ PlayerHealth.ToString();
     }
 
     private void Update()
@@ -47,52 +50,59 @@ public class Player : MonoBehaviourPunCallbacks
                 // Apply movement
                 transform.position += movement;
 
-                // Shoot
-                if (Input.GetMouseButtonUp(0))
-                {
-                    PlayerBullet bullet = Instantiate(m_prefab_player_bullet, transform.position + transform.forward, transform.rotation);
-                    Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
-                    bulletRb.velocity = transform.forward * bulletSpeed;
-                }
-        }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        EnemyShipScript enemy = collision.transform.GetComponent<EnemyShipScript>();
-        PlayerBullet bullet = collision.transform.GetComponent<PlayerBullet>();
-
-        if (enemy != null)
-        {
-            // Destroy the enemy GameObject across all clients
-            PhotonNetwork.Destroy(enemy.gameObject);
-
-            // If this is the client that owns this player, handle health deduction
-            if (photonView.IsMine)
+            // Shoot
+            if (Input.GetMouseButtonUp(0))
             {
-                photonView.RPC("DestroyByPlayer", RpcTarget.All, photonView.ViewID);
+                // Instantiate the bullet with the player's current rotation
+                PhotonNetwork.Instantiate(m_prefab_player_bullet.name, transform.position, transform.rotation);
             }
-        }
-        else if (bullet != null)
-        {
-            // Destroy the bullet GameObject across all clients
-            PhotonNetwork.Destroy(bullet.gameObject);
         }
     }
 
     [PunRPC]
-    public void DestroyByPlayer(int viewId)
+    public void DestroyByPlayer()
     {
-        // Check if the viewId matches and if this client owns the photonView
-        if (photonView.ViewID == viewId && photonView.IsMine)
+        // Ensure that the RPC affects only the player that owns this PhotonView
+        if (photonView.IsMine)
         {
             PlayerHealth--;
+            UICanvas.instance.Health.text = "Health :" + PlayerHealth.ToString();
 
             if (PlayerHealth <= 0)
             {
-                // Destroy this gameObject across all clients
-                PhotonNetwork.Destroy(gameObject);
+                // Instead of destroying, set the gameObject to inactive
+                gameObject.SetActive(false);
             }
         }
+
     }
+
+    [PunRPC]
+    public void HealThePlayer()
+    {
+        if(photonView.IsMine)
+        {
+            PlayerHealth += AmounttoHealh;
+            PlayerHealth = Mathf.Min(PlayerHealth, MaxPlayerHealth); // Prevent overhealing
+            UICanvas.instance.Health.text = "Health :" + PlayerHealth.ToString();
+        }
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        EnemyShipScript enemy = other.gameObject.GetComponent<EnemyShipScript>();
+        HealthPickup health = other.gameObject.GetComponent<HealthPickup>();
+        if (other.tag == "Enemy")
+        {
+            photonView.RPC("DestroyByPlayer", RpcTarget.All);
+            enemy.photonView.RPC("RequestDestruction", RpcTarget.AllViaServer);
+        }
+        else if (other.tag == "Health" && photonView.IsMine)
+        {
+            photonView.RPC("HealThePlayer", RpcTarget.All);
+            // Request the MasterClient to destroy the health pickup
+            other.gameObject.GetComponent<HealthPickup>().photonView.RPC("DestroyHealthPickup", RpcTarget.MasterClient);
+        }
+    }
+
 }

@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Photon.Realtime;
+using Photon.Pun;
 
-public class EnemyShipScript : MonoBehaviour
+public class EnemyShipScript : MonoBehaviourPunCallbacks
 {
     public Transform[] playerTransforms; // Assign this in the inspector with both player transforms
 
     public float moveSpeed = 5f;
-    public int m_score = 100;
+    public float m_score = 100;
 
     private Transform targetPlayerTransform; // To keep track of the nearest player
 
@@ -73,23 +75,39 @@ public class EnemyShipScript : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         PlayerBullet player_bullet = collision.transform.GetComponent<PlayerBullet>();
-        Player ThePlayer = collision.transform.GetComponent<Player>();
 
-        if (player_bullet)
+        if (player_bullet != null)
         {
-            DeleteObject(player_bullet);
-            //StageLoop.Instance.AddScore(m_score);
+            if (player_bullet)
+            {
+                PhotonNetwork.Destroy(player_bullet.gameObject);
+                photonView.RPC("GivePoints", RpcTarget.All);
+            }
+            PhotonNetwork.Destroy(gameObject);
         }
-        else
+        else if (ShouldDestroyOnCollision(collision))
         {
-            Destroy(this.gameObject);
+            PhotonNetwork.Destroy(gameObject);
         }
-
     }
+
+    private bool ShouldDestroyOnCollision(Collision collision)
+    {
+        return collision.gameObject.CompareTag("Enemy");
+    }
+
+
 
     public void DeleteObject(PlayerBullet bullet)
     {
         GameObject.Destroy(bullet);
         Destroy(gameObject);
+    }
+
+    [PunRPC]
+    public void GivePoints()
+    {
+        UICanvas.instance.High += m_score;
+        UICanvas.instance.HighScore.text = "HighScore: " + UICanvas.instance.High.ToString();
     }
 }

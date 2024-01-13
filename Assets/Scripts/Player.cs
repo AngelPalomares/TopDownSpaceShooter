@@ -12,6 +12,12 @@ public class Player : MonoBehaviourPunCallbacks
     public float m_move_speed = 1;
     public float bulletSpeed = 10f; // Bullet speed
     public float PlayerHealth = 4;
+    public float MaxPlayerHealth = 4;
+
+    public void Start()
+    {
+        PlayerHealth = MaxPlayerHealth;
+    }
 
     private void Update()
     {
@@ -42,40 +48,51 @@ public class Player : MonoBehaviourPunCallbacks
                 transform.position += movement;
 
                 // Shoot
-                if (Input.GetKeyDown(KeyCode.Z))
+                if (Input.GetMouseButtonUp(0))
                 {
                     PlayerBullet bullet = Instantiate(m_prefab_player_bullet, transform.position + transform.forward, transform.rotation);
                     Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
                     bulletRb.velocity = transform.forward * bulletSpeed;
                 }
-            }
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        Enemy player_bullet = collision.transform.GetComponent<Enemy>();
-        if (player_bullet)
+        EnemyShipScript enemy = collision.transform.GetComponent<EnemyShipScript>();
+        PlayerBullet bullet = collision.transform.GetComponent<PlayerBullet>();
+
+        if (enemy != null)
         {
-            DestroyByPlayer(player_bullet);
+            // Destroy the enemy GameObject across all clients
+            PhotonNetwork.Destroy(enemy.gameObject);
+
+            // If this is the client that owns this player, handle health deduction
+            if (photonView.IsMine)
+            {
+                photonView.RPC("DestroyByPlayer", RpcTarget.All, photonView.ViewID);
+            }
+        }
+        else if (bullet != null)
+        {
+            // Destroy the bullet GameObject across all clients
+            PhotonNetwork.Destroy(bullet.gameObject);
         }
     }
 
-    void DestroyByPlayer(Enemy a_player_bullet)
+    [PunRPC]
+    public void DestroyByPlayer(int viewId)
     {
-        //add score
-        PlayerHealth--;
-
-        if(PlayerHealth <= 0)
+        // Check if the viewId matches and if this client owns the photonView
+        if (photonView.ViewID == viewId && photonView.IsMine)
         {
-            this.gameObject.SetActive(false);
+            PlayerHealth--;
+
+            if (PlayerHealth <= 0)
+            {
+                // Destroy this gameObject across all clients
+                PhotonNetwork.Destroy(gameObject);
+            }
         }
-
-        //delete enemy
-        if (a_player_bullet)
-        {
-            a_player_bullet.DeleteObject();
-        }
-
-
     }
 }

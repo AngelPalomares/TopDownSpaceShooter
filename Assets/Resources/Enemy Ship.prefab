@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy Ship
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 4253280567622488715, guid: d57e4413003df4112a72f9884551ff22, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
@@ -105,7 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d365d462488e47f3b1428c725fdb230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTransform: {fileID: 0}
+  playerTransforms: []
   moveSpeed: 5
   m_score: 100
 --- !u!54 &-3557332427860060450

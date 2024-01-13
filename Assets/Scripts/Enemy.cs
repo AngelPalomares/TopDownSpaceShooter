@@ -59,11 +59,6 @@ public class Enemy : MonoBehaviour
 
 	void DestroyByPlayer(PlayerBullet a_player_bullet)
 	{
-		//add score
-		if (StageLoop.Instance)
-		{
-			StageLoop.Instance.AddScore(m_score);
-		}
 
 		//delete bullet
 		if (a_player_bullet)
@@ -71,7 +66,7 @@ public class Enemy : MonoBehaviour
 			a_player_bullet.DeleteObject();
 		}
 
-		//delete self
+
 		DeleteObject();
 	}
 }

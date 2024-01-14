@@ -8,14 +8,31 @@ using System;
 
 public class Multiplayer : MonoBehaviourPunCallbacks
 {
+    public TMP_Text Loadingtext;
     public TMP_InputField CreateInput, JoinINput, NameInput;
 
-    public GameObject SinglePlayerPanel,MultiplayerPanel;
+    public GameObject SinglePlayerPanel,MultiplayerPanel, loadingPanel;
 
     // Start is called before the first frame update
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
+        StartCoroutine(Connecttotheserver());
+    }
+
+    public IEnumerator Connecttotheserver()
+    {
+        Loadingtext.text = "Connecting to online servers!";
+        loadingPanel.SetActive(true);
+        yield return new WaitForSeconds(1);
+        Loadingtext.text = "Succesfully Connected";
+        yield return new WaitForSeconds(1);
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        Loadingtext.text = "Succesfully Connected";
+        loadingPanel.SetActive(false);
     }
 
     // Update is called once per frame

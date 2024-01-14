@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using TMPro;
 
 public class Spawners : MonoBehaviourPunCallbacks
 {
@@ -26,13 +25,12 @@ public class Spawners : MonoBehaviourPunCallbacks
 
     private bool gameStarted = false;
 
-    public Text Timerforthegame;
-    public float MaxTimer;
-    public float Timer;
+    public bool GameisOver = false;
+
+    public float Timer = 10f;
 
     void Start()
     {
-        Timer = MaxTimer;
         SpawnThePlayer();
         if (SinglePlayer.instance.Singleplayer)
         {
@@ -66,16 +64,14 @@ public class Spawners : MonoBehaviourPunCallbacks
             {
                 UpdateEnemySpawn();
                 UpdatePowerupSpawn();
-                Countdowntimer(); // Direct call for single player
+                Countdown();
             }
             else if (PhotonNetwork.IsMasterClient)
             {
                 UpdateEnemySpawn();
                 UpdatePowerupSpawn();
+                Countdown();
             }
-
-            Countdowntimer(); // Direct call for single player
-            photonView.RPC("UpdateTimerTextRPC", RpcTarget.All, Timer);
         }
     }
 
@@ -121,24 +117,32 @@ public class Spawners : MonoBehaviourPunCallbacks
         PhotonNetwork.Instantiate(Player.name, randomPosition, Quaternion.identity);
     }
 
-    public void Countdowntimer()
+    public void Countdown()
     {
-        if (Timer > 0)
+        if (PhotonNetwork.IsMasterClient)
         {
             Timer -= Time.deltaTime;
+            if (Timer <= 0)
+            {
+                Timer = 0;
+                photonView.RPC(nameof(GameIsOver), RpcTarget.All);
+            }
+
             photonView.RPC("UpdateTimerTextRPC", RpcTarget.All, Timer);
         }
-        else
-        {
-            Timer = 0;
-            // Handle what happens when the timer reaches 0
-            // For example: EndGame();
-        }
     }
+
     [PunRPC]
     public void UpdateTimerTextRPC(float time)
     {
         Timer = time;
-        Timerforthegame.text = "Timer: " + Timer.ToString();
+        UICanvas.instance.Timer.text = "Timer: " + Timer.ToString("F1"); // "F2" for 2 decimal places
     }
+
+    [PunRPC]
+    public void GameIsOver()
+    {
+        GameisOver = true;
+    }
+
 }

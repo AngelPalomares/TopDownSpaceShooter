@@ -63,13 +63,13 @@ public class Spawners : MonoBehaviourPunCallbacks
             if (SinglePlayer.instance.Singleplayer)
             {
                 UpdateEnemySpawn();
-                UpdatePowerupSpawn();
+                //UpdatePowerupSpawn();
                 Countdown();
             }
             else if (PhotonNetwork.IsMasterClient)
             {
                 UpdateEnemySpawn();
-                UpdatePowerupSpawn();
+                //UpdatePowerupSpawn();
                 Countdown();
             }
         }

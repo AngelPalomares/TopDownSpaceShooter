@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6542996136087228828}
   - component: {fileID: 753693126634890871}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Explosion (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -188,18 +188,74 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: -8513424388201257645, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -7609145667655734672, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -7235015103121818086, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -6867817067360422807, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -6715274194882249409, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -4304645045364368365, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -3957782524123411102, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -1204481213396091468, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -344004081357383697, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d57e4413003df4112a72f9884551ff22, type: 3}
       propertyPath: m_Name
       value: Enemy Ship
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d57e4413003df4112a72f9884551ff22, type: 3}
       propertyPath: m_TagString
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 2032660858638407299, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2259602271755987605, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3779745573541866595, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4253280567622488715, guid: d57e4413003df4112a72f9884551ff22, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
       objectReference: {fileID: 2100000, guid: 732b2842b2cb1484683ab4199e403aef, type: 2}
+    - target: {fileID: 7750397243111347764, guid: d57e4413003df4112a72f9884551ff22, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -243,6 +299,8 @@ MonoBehaviour:
   playerTransforms: []
   moveSpeed: 3
   DeathSound: {fileID: 8300000, guid: 730c89d887565408fb7d24bf839b80ef, type: 3}
+  HealthPickup: {fileID: 3478612080873816046, guid: fe310754b65ae4adea396f5b89b5ef19, type: 3}
+  healthPickupSpawnProbability: 0.5
 --- !u!54 &-3557332427860060450
 Rigidbody:
   m_ObjectHideFlags: 0

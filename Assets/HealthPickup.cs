@@ -6,7 +6,9 @@ using UnityEngine;
 
 public class HealthPickup : MonoBehaviourPunCallbacks
 {
-    public float Amounttoheal = 2f;
+    //public float Amounttoheal = 2f;
+
+    public AudioClip Pickup;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -33,8 +35,11 @@ public class HealthPickup : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            AudioSource.PlayClipAtPoint(Pickup, transform.position);
             PhotonNetwork.Destroy(gameObject);
         }
     }
+
+
 
 }

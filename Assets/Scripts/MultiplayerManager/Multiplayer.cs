@@ -8,7 +8,7 @@ using System;
 
 public class Multiplayer : MonoBehaviourPunCallbacks
 {
-    public TMP_Text Loadingtext;
+    public TMP_Text Loadingtext,errortext;
     public TMP_InputField CreateInput, JoinINput, NameInput;
 
     public GameObject SinglePlayerPanel,MultiplayerPanel, loadingPanel;
@@ -48,14 +48,40 @@ public class Multiplayer : MonoBehaviourPunCallbacks
 
     public void CreatetheRoom()
     {
-        RoomOptions roomoptions = new RoomOptions();
-        roomoptions.MaxPlayers = 2;
-        PhotonNetwork.CreateRoom(CreateInput.text, roomoptions);
+        if (!string.IsNullOrEmpty(NameInput.text) && !string.IsNullOrEmpty(CreateInput.text))
+        {
+            RoomOptions roomOptions = new RoomOptions();
+            roomOptions.MaxPlayers = 2;
+            PhotonNetwork.CreateRoom(CreateInput.text, roomOptions);
+        }
+        else
+        {
+            // Optionally, display a message to the user indicating that both fields are required.
+            Debug.Log("Both Name and Room Name are required to create a room.");
+            StartCoroutine(Erroroncreateroom());
+        }
+    }
+
+    public IEnumerator Erroroncreateroom()
+    {
+        errortext.text = "Both Name and Room Name are required to create a room.";
+        yield return new WaitForSeconds(2f);
+        errortext.text = " ";
+    }
+
+    public IEnumerator Erroronjoinroom()
+    {
+        errortext.text = "Both Name and Room Name are required to join a room.";
+        yield return new WaitForSeconds(2f);
+        errortext.text = " ";
     }
 
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(JoinINput.text);
+        if (!string.IsNullOrEmpty(NameInput.text) && !string.IsNullOrEmpty(JoinINput.text))
+        {
+            PhotonNetwork.JoinRoom(JoinINput.text);
+        }
         
     }
 

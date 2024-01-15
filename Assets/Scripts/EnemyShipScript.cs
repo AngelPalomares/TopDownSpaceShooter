@@ -9,8 +9,11 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
     public Transform[] playerTransforms; // Assign this in the inspector with both player transforms
     public float moveSpeed = 5f;
     public AudioClip DeathSound;
+    public GameObject HealthPickup;
 
     private Transform targetPlayerTransform; // To keep track of the nearest player
+    public float healthPickupSpawnProbability = 0.5f; // 50% chance to spawn by default
+
 
     private void Start()
     {
@@ -73,6 +76,14 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             photonView.RPC("PlayDeathSound", RpcTarget.All);
+
+            // Determine whether to spawn health pickup based on probability
+            if (Random.value < healthPickupSpawnProbability)
+            {
+                Quaternion spawnRotation = Quaternion.Euler(0, -180, 0);
+                PhotonNetwork.Instantiate(HealthPickup.name, transform.position, spawnRotation);
+            }
+
             PhotonNetwork.Destroy(gameObject);
         }
     }

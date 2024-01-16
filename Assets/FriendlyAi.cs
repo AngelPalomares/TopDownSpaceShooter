@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using System;
+using static UnityEditor.FilePathAttribute;
+using System.Linq;
 
 public class FriendlyAi : MonoBehaviourPunCallbacks
 {
@@ -21,14 +24,16 @@ public class FriendlyAi : MonoBehaviourPunCallbacks
     private float lastShotTime = 0;
     private Transform targetEnemy;
 
+
     private void Start()
     {
         currentHealth = maxHealth;
+        FindAndTargetEnemy(); // Find the nearest enemy at the start
     }
 
     private void Update()
     {
-        FindAndTargetEnemy();
+        FindAndTargetEnemy(); // Continuously find the nearest enemy
 
         if (targetEnemy != null)
         {
@@ -46,59 +51,56 @@ public class FriendlyAi : MonoBehaviourPunCallbacks
         }
     }
 
+
+
     private void FindAndTargetEnemy()
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRadius, enemyLayer);
-        float closestDistance = Mathf.Infinity;
-        Transform closestEnemy = null;
+        Transform closestEnemy = hitColliders
 
-        foreach (var hitCollider in hitColliders)
-        {
-            float distance = Vector3.Distance(transform.position, hitCollider.transform.position);
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-                closestEnemy = hitCollider.transform;
-            }
-        }
+.Select(hitCollider => hitCollider.transform)
+.OrderBy(t => Vector3.Distance(transform.position, t.position))
+.FirstOrDefault();
 
-        targetEnemy = closestEnemy;
+            targetEnemy = closestEnemy;
     }
 
     private void FaceTarget(Transform target)
     {
+        // Calculate the direction to the target
+        Vector3 directionToTarget = (target.position - transform.position).normalized;
 
-        Vector3 targetDirection = target.position - Shootinglocaiton.position;
+        // Calculate the rotation needed to look at the target
+        Quaternion lookRotation = Quaternion.LookRotation(directionToTarget);
 
+        // Since we are in a top-down view and we want to lock Y and Z rotations at 90 degrees,
+        // we first get the X rotation from the look rotation.
+        float xRotation = lookRotation.eulerAngles.x;
 
-        float heightDifference = target.position.y - Shootinglocaiton.position.y;
+        // Adjust the xRotation if it goes beyond the range of -90 to 90 degrees.
+        xRotation = (xRotation > 180) ? xRotation - 360 : xRotation;
 
+        // Now we create our new rotation using only the X component of the look rotation.
+        // We are assuming here that the 'up' direction for your sprites is along the global Z axis.
+        Quaternion targetRotation = Quaternion.Euler(xRotation, 90, 90);
 
-        float horizontalDistance = Vector3.Distance(new Vector3(target.position.x, Shootinglocaiton.position.y, target.position.z), Shootinglocaiton.position);
-
-
-        float angleX = Mathf.Atan2(heightDifference, horizontalDistance) * Mathf.Rad2Deg;
-
-
-        Quaternion targetRotation = Quaternion.Euler(-angleX, 90, 90);
-
-
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+        // Slerp smoothly to the target rotation
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation,
+    Time.deltaTime * rotationSpeed);
     }
+
+
 
     private void MoveTowardsTarget(Transform target)
     {
-        float distanceToTarget = Vector3.Distance(transform.position, target.position);
-        if (distanceToTarget > safeDistance)
-        {
-            Vector3 direction = (target.position - transform.position).normalized;
-            Vector3 newPosition = Vector3.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
-            transform.position = newPosition;
-        }
+        // Move the AI towards the target
+        Vector3 newPosition = Vector3.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
+        transform.position = newPosition;
     }
 
     private void Shoot()
     {
+        // Handle the shooting mechanism
         if (Time.time > lastShotTime + shootingInterval)
         {
             lastShotTime = Time.time;
@@ -106,19 +108,18 @@ public class FriendlyAi : MonoBehaviourPunCallbacks
             Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
             if (bulletRb != null)
             {
-                bulletRb.velocity= Shootinglocaiton.forward * bulletSpeed;
+                bulletRb.velocity = Shootinglocaiton.forward* bulletSpeed;
             }
         }
     }
 
 public void TakeDamage(float amount)
     {
+        // Handle taking damage
         currentHealth -= amount;
         if (currentHealth <= 0)
         {
             PhotonNetwork.Destroy(gameObject);
         }
     }
-
-
 }

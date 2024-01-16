@@ -22,6 +22,15 @@ public class UICanvas : MonoBehaviourPunCallbacks
 
     public bool TimeisOver;
 
+    public AudioClip MenuSound;
+
+    public GameObject GameOverPanel;
+    public TMP_Text GameOverText;
+
+    public GameObject Photon;
+    public GameObject Singleplayergameobject;
+    SinglePlayer[] singlePlayers;
+
     private void Awake()
     {
         instance = this;
@@ -29,7 +38,7 @@ public class UICanvas : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        
+        singlePlayers = GameObject.FindObjectsOfType<SinglePlayer>();
     }
 
     // Update is called once per frame
@@ -38,4 +47,24 @@ public class UICanvas : MonoBehaviourPunCallbacks
 
 
     }
+
+    public void ReturnToMenu()
+    {
+        AudioSource.PlayClipAtPoint(MenuSound, transform.position);
+        PhotonNetwork.Disconnect();
+        PhotonNetwork.LoadLevel(0);
+    }
+    public void QuitGame()
+    {
+        AudioSource.PlayClipAtPoint(MenuSound, transform.position);
+        Application.Quit();
+    }
+
+    public void RestartTheGame()
+    {
+        PhotonNetwork.LoadLevel(1);
+    }
+
+    
+
 }

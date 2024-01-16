@@ -300,7 +300,11 @@ MonoBehaviour:
   moveSpeed: 3
   DeathSound: {fileID: 8300000, guid: 730c89d887565408fb7d24bf839b80ef, type: 3}
   HealthPickup: {fileID: 3478612080873816046, guid: fe310754b65ae4adea396f5b89b5ef19, type: 3}
+  Shooting: {fileID: 8831263539094909697, guid: 09bae1434d07840b692df2853f604551, type: 3}
   healthPickupSpawnProbability: 0.5
+  CanShoot: 0
+  projectilePrefab: {fileID: 0}
+  shootingRate: 2
 --- !u!54 &-3557332427860060450
 Rigidbody:
   m_ObjectHideFlags: 0

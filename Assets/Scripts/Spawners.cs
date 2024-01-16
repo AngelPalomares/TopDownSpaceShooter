@@ -31,6 +31,12 @@ public class Spawners : MonoBehaviourPunCallbacks
 
     public float Timer = 10f;
 
+    public bool SecondWave = false;
+
+    public GameObject SecondEnemy;
+    public float StartSecondTimeBetweenSpawns;
+    private float SecondBtwSpawns;
+
     void Start()
     {
         SpawnThePlayer();
@@ -66,6 +72,7 @@ public class Spawners : MonoBehaviourPunCallbacks
             if (SinglePlayer.instance.Singleplayer)
             {
                 UpdateEnemySpawn();
+                secondwave();
                 //UpdatePowerupSpawn();
                 Countdown();
             }
@@ -73,7 +80,10 @@ public class Spawners : MonoBehaviourPunCallbacks
             {
                 UpdateEnemySpawn();
                 //UpdatePowerupSpawn();
+                secondwave();
                 Countdown();
+
+
             }
         }
     }
@@ -136,8 +146,8 @@ public class Spawners : MonoBehaviourPunCallbacks
                 Timer = 0;
                 photonView.RPC(nameof(GameIsOver), RpcTarget.All);
             }
-
             photonView.RPC("UpdateTimerTextRPC", RpcTarget.All, Timer);
+            photonView.RPC(nameof(ActivateSecondWave), RpcTarget.All);
         }
     }
 
@@ -152,6 +162,55 @@ public class Spawners : MonoBehaviourPunCallbacks
     public void GameIsOver()
     {
         GameisOver = true;
+
+        UICanvas.instance.GameOverPanel.SetActive(true);
+        UICanvas.instance.GameOverText.text = "You have surived!";
+    }
+
+    [PunRPC]
+    public void ActivateSecondWave()
+    {
+        if(Timer <= 140)
+        {
+            SecondWave = true;
+        }
+        else if(Timer <= 100)
+        {
+            StartTimeBtwSpawns = 2;
+            StartSecondTimeBetweenSpawns = 3;
+        }else if( Timer <= 60)
+        {
+            StartTimeBtwSpawns = 1;
+            StartSecondTimeBetweenSpawns = 2;
+        }
+
+        if(SecondWave == true)
+        {
+            StartTimeBtwSpawns = 3;
+        }
+    }
+
+    public void secondwave()
+    {
+        if (SecondWave == true)
+        {
+            if (SecondBtwSpawns <= 0)
+            {
+                Vector3 SpawnPosition = Spawnpoints[Random.Range(0, Spawnpoints.Length)].position;
+                PhotonNetwork.Instantiate(SecondEnemy.name, SpawnPosition, Quaternion.identity);
+
+                if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
+                {
+                    Vector3 SpawnPosition2 = Spawnpoints[Random.Range(0, Spawnpoints.Length)].position;
+                    PhotonNetwork.Instantiate(SecondEnemy.name, SpawnPosition2, Quaternion.identity);
+                }
+                SecondBtwSpawns = StartSecondTimeBetweenSpawns;
+            }
+            else
+            {
+                SecondBtwSpawns -= Time.deltaTime;
+            }
+        }
     }
 
 }

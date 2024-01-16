@@ -11,13 +11,23 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
     public AudioClip DeathSound;
     public GameObject HealthPickup;
 
+    public GameObject Shooting;
+
     private Transform targetPlayerTransform; // To keep track of the nearest player
     public float healthPickupSpawnProbability = 0.5f; // 50% chance to spawn by default
+
+    public bool CanShoot;
+
+    public GameObject projectilePrefab; // Assign this in the inspector
+    public float shootingRate = 2f; // Enemy shoots every 2 seconds
+
+    private float shootTimer;
+
 
 
     private void Start()
     {
-        // Find players dynamically if not assigned
+
         if (playerTransforms == null || playerTransforms.Length == 0)
         {
             playerTransforms = FindObjectsOfType<Player>()
@@ -37,8 +47,18 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
 
             if (targetPlayerTransform != null)
             {
-                // Move towards the nearest player
+
                 MoveTowardsTargetPlayer();
+            }
+        }
+
+        if (CanShoot)
+        {
+            shootTimer += Time.deltaTime;
+            if (shootTimer >= shootingRate)
+            {
+                Shoot();
+                shootTimer = 0f;
             }
         }
     }
@@ -49,7 +69,7 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
         Transform nearestPlayer = null;
         foreach (var player in playerTransforms)
         {
-            // Check if the player is active and the transform reference is still valid
+
             if (player != null && player.gameObject.activeSelf)
             {
                 float distance = Vector3.Distance(transform.position, player.position);
@@ -113,4 +133,11 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
             }
         }
     }
+
+    private void Shoot()
+    {
+        GameObject projectile = PhotonNetwork.Instantiate(projectilePrefab.name, transform.position, transform.rotation);
+    }
+
+
 }

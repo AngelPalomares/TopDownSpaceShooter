@@ -21,6 +21,8 @@ public class Multiplayer : MonoBehaviourPunCallbacks
     public RoomButton TheRoomButton;
     private List<RoomButton> allroomButtons = new List<RoomButton>();
 
+    public AudioClip button;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -132,5 +134,10 @@ public class Multiplayer : MonoBehaviourPunCallbacks
         string randomRoomName = "Room_" + System.Guid.NewGuid().ToString(); // Generate a random room name
 
         PhotonNetwork.CreateRoom(randomRoomName, roomOptions);
+    }
+
+    public void PlayClip()
+    {
+        AudioSource.PlayClipAtPoint(button, transform.position);
     }
 }

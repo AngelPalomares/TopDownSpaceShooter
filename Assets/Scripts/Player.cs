@@ -101,7 +101,6 @@ public class Player : MonoBehaviourPunCallbacks
             // Shoot
             if (Input.GetMouseButtonUp(0))
             {
-                // Instantiate the bullet with the player's current rotation
                 PhotonNetwork.Instantiate(m_prefab_player_bullet.name, transform.position, transform.rotation);
             }
         }
@@ -197,5 +196,6 @@ public class Player : MonoBehaviourPunCallbacks
             other.gameObject.GetComponent<HealthPickup>().photonView.RPC("DestroyHealthPickup", RpcTarget.MasterClient);
         }
     }
+
 
 }

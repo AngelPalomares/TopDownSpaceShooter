@@ -466,9 +466,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_prefab_player_bullet: {fileID: 5544838678656471585, guid: 5c553716b6d3d4b638418ae5973114cb, type: 3}
   m_move_speed: 4
-  bulletSpeed: 10
-  PlayerHealth: 4
-  MaxPlayerHealth: 4
+  bulletSpeed: 15
+  PlayerHealth: 10
+  MaxPlayerHealth: 10
   AmounttoHealh: 10
   Minx: -7.95
   Miny: -4.08

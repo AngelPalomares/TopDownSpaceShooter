@@ -19,6 +19,8 @@ public class Spawners : MonoBehaviourPunCallbacks
 
     public GameObject Enemy;
 
+    public GameObject FriendlyAI;
+
     [Header("Player")]
     public GameObject Player;
     public float Minx, Miny, Maxx, Maxy;
@@ -35,6 +37,7 @@ public class Spawners : MonoBehaviourPunCallbacks
         if (SinglePlayer.instance.Singleplayer)
         {
             StartGame();
+            SpawntheFriendlyAI();
         }
     }
 
@@ -115,6 +118,12 @@ public class Spawners : MonoBehaviourPunCallbacks
     {
         Vector2 randomPosition = new Vector2(Random.Range(Minx, Maxx), Random.Range(Miny, Maxy));
         PhotonNetwork.Instantiate(Player.name, randomPosition, Quaternion.identity);
+    }
+
+    public void SpawntheFriendlyAI()
+    {
+        Vector2 randomPosition = new Vector2(Random.Range(Minx, Maxx), Random.Range(Miny, Maxy));
+        PhotonNetwork.Instantiate(FriendlyAI.name, randomPosition, Quaternion.identity);
     }
 
     public void Countdown()

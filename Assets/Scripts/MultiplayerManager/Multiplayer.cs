@@ -103,8 +103,15 @@ public class Multiplayer : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        Debug.Log("Game was created");
-        PhotonNetwork.LoadLevel("Main Game");
+        if (SinglePlayer.instance.Tutorial == false)
+        {
+            Debug.Log("Game was created");
+            PhotonNetwork.LoadLevel("Main Game");
+        }
+        else
+        {
+            PhotonNetwork.LoadLevel(2);
+        }
     }
 
     public void CreateSinglePlayer()
@@ -114,6 +121,15 @@ public class Multiplayer : MonoBehaviourPunCallbacks
         roomoptions.MaxPlayers = 1;
         string randomRoomName = "Room_" + Guid.NewGuid().ToString();
         PhotonNetwork.CreateRoom(randomRoomName,roomoptions);
+    }
+
+    public void CreateTutorial()
+    {
+        SinglePlayer.instance.Tutorial = true;
+        RoomOptions roomoptions = new RoomOptions();
+        roomoptions.MaxPlayers = 1;
+        string randomRoomName = "Room_" + Guid.NewGuid().ToString();
+        PhotonNetwork.CreateRoom(randomRoomName, roomoptions);
     }
 
     public void FindOpenLobby()

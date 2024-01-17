@@ -37,6 +37,9 @@ public class Spawners : MonoBehaviourPunCallbacks
     public float StartSecondTimeBetweenSpawns;
     private float SecondBtwSpawns;
 
+    public float StartSecondSpawnertTime;
+    private float SecondSecondbtwSpawns;
+
     void Start()
     {
         SpawnThePlayer();
@@ -67,12 +70,13 @@ public class Spawners : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (gameStarted)
+        if (gameStarted && GameisOver == false)
         {
             if (SinglePlayer.instance.Singleplayer)
             {
                 UpdateEnemySpawn();
                 secondwave();
+                SecondSecondWave();
                 //UpdatePowerupSpawn();
                 Countdown();
             }
@@ -81,6 +85,7 @@ public class Spawners : MonoBehaviourPunCallbacks
                 UpdateEnemySpawn();
                 //UpdatePowerupSpawn();
                 secondwave();
+                SecondSecondWave();
                 Countdown();
 
 
@@ -211,6 +216,45 @@ public class Spawners : MonoBehaviourPunCallbacks
                 SecondBtwSpawns -= Time.deltaTime;
             }
         }
+    }
+
+    public void SecondSecondWave()
+    {
+        if (SecondWave == true)
+        {
+            if (SecondSecondbtwSpawns <= 0)
+            {
+                Vector3 SpawnPosition = Spawnpoints[Random.Range(0, Spawnpoints.Length)].position;
+                PhotonNetwork.Instantiate(Enemy.name, SpawnPosition, Quaternion.identity);
+
+                if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
+                {
+                    Vector3 SpawnPosition2 = Spawnpoints[Random.Range(0, Spawnpoints.Length)].position;
+                    PhotonNetwork.Instantiate(Enemy.name, SpawnPosition2, Quaternion.identity);
+                }
+                SecondSecondbtwSpawns = StartSecondSpawnertTime;
+            }
+            else
+            {
+                SecondSecondbtwSpawns -= Time.deltaTime;
+            }
+        }
+    }
+
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+       if(GameisOver == false)
+       {
+            StartCoroutine(ExitPlayer());
+       }
+    }
+
+    public IEnumerator ExitPlayer()
+    {
+        PhotonNetwork.Disconnect();
+        PhotonNetwork.LoadLevel(0);
+
+        yield return null;
     }
 
 }

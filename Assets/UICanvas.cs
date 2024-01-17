@@ -65,6 +65,4 @@ public class UICanvas : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel(1);
     }
 
-    
-
 }

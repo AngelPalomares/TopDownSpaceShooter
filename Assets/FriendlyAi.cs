@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System;
-using static UnityEditor.FilePathAttribute;
 using System.Linq;
 
 public class FriendlyAi : MonoBehaviourPunCallbacks
@@ -58,9 +57,9 @@ public class FriendlyAi : MonoBehaviourPunCallbacks
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRadius, enemyLayer);
         Transform closestEnemy = hitColliders
 
-.Select(hitCollider => hitCollider.transform)
-.OrderBy(t => Vector3.Distance(transform.position, t.position))
-.FirstOrDefault();
+        .Select(hitCollider => hitCollider.transform)
+        .OrderBy(t => Vector3.Distance(transform.position, t.position))
+        .FirstOrDefault();
 
             targetEnemy = closestEnemy;
     }

@@ -391,12 +391,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 67.1
+  m_fontSize: 105.47
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 105.47
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
@@ -457,8 +457,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 160, y: -497}
-  m_SizeDelta: {x: 254.96, y: 75}
+  m_AnchoredPosition: {x: 25.108, y: 270}
+  m_SizeDelta: {x: 911.11, y: 193.57}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &181703835
 PrefabInstance:
@@ -700,7 +700,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &271770058
 Transform:
   m_ObjectHideFlags: 0
@@ -1774,8 +1774,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 850500372}
-  - component: {fileID: 850500371}
   - component: {fileID: 850500373}
+  - component: {fileID: 850500374}
   m_Layer: 0
   m_Name: GameManger
   m_TagString: Untagged
@@ -1783,86 +1783,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &850500371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 850500370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ecb96a1046664a13b57a36eaf4698d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartTimeBtwSpawns: 5
-  Spawnpoints:
-  - {fileID: 226099465}
-  - {fileID: 33599289}
-  - {fileID: 1536347935}
-  - {fileID: 1065664224}
-  - {fileID: 1877738284}
-  - {fileID: 432541797}
-  - {fileID: 1570188470}
-  - {fileID: 339251218}
-  - {fileID: 1841525285}
-  - {fileID: 708695248}
-  - {fileID: 1709539452}
-  - {fileID: 317550049}
-  - {fileID: 585935543}
-  - {fileID: 2750408}
-  - {fileID: 511516759}
-  - {fileID: 31865594}
-  - {fileID: 749849295}
-  - {fileID: 1522044497}
-  - {fileID: 481326734}
-  - {fileID: 310898623}
-  - {fileID: 356284538}
-  - {fileID: 1281443327}
-  - {fileID: 1399568978}
-  PowerupSpawnPoints:
-  - {fileID: 2029555937}
-  - {fileID: 1418661303}
-  - {fileID: 950826531}
-  - {fileID: 397801222}
-  - {fileID: 1417614476}
-  - {fileID: 2035458995}
-  - {fileID: 1134400869}
-  - {fileID: 281700450}
-  - {fileID: 570552380}
-  - {fileID: 1269705599}
-  - {fileID: 698303336}
-  - {fileID: 102141424}
-  - {fileID: 1961079973}
-  - {fileID: 2124652053}
-  - {fileID: 342325283}
-  - {fileID: 1992333560}
-  - {fileID: 1064744844}
-  - {fileID: 620350193}
-  - {fileID: 572001207}
-  - {fileID: 1115783110}
-  - {fileID: 1589163418}
-  - {fileID: 313694888}
-  - {fileID: 1699783991}
-  - {fileID: 205659376}
-  - {fileID: 1071543044}
-  - {fileID: 2111917726}
-  - {fileID: 1944273667}
-  StartHealthBtwSpawns: 10
-  Health: {fileID: 3478612080873816046, guid: fe310754b65ae4adea396f5b89b5ef19, type: 3}
-  Enemy: {fileID: 3740539992781806908, guid: 63f2e845a360c47dba45c05baa8a1a61, type: 3}
-  FriendlyAI: {fileID: 7388652019072995771, guid: 52b1764af59dd43ebbf4f5638c183b85, type: 3}
-  Player: {fileID: 7100218667894767020, guid: df9d851aa00194ae6836f984229147c0, type: 3}
-  Minx: -7.95
-  Miny: -4.08
-  Maxx: 7.99
-  Maxy: 3.99
-  GameisOver: 0
-  Timer: 180
-  SecondWave: 0
-  SecondEnemy: {fileID: 3740539992781806908, guid: 9bf7099bb62c24a57a5d0d1b05f608c4, type: 3}
-  StartSecondTimeBetweenSpawns: 5
-  StartSecondSpawnertTime: 3
 --- !u!4 &850500372
 Transform:
   m_ObjectHideFlags: 0
@@ -1900,6 +1820,25 @@ MonoBehaviour:
   sceneViewId: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &850500374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850500370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8330ad6ba8334f9b8f0ed7368d1c176, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Buttons: 00000000
+  Text: {fileID: 162401114}
+  Player: {fileID: 7100218667894767020, guid: df9d851aa00194ae6836f984229147c0, type: 3}
+  Minx: -7.95
+  Miny: -4.08
+  Maxx: 7.99
+  Maxy: 3.99
 --- !u!1 &950826530
 GameObject:
   m_ObjectHideFlags: 0
@@ -2117,7 +2056,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1024579521
 Transform:
   m_ObjectHideFlags: 0

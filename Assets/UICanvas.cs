@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Linq;
 
 public class UICanvas : MonoBehaviourPunCallbacks
 {
@@ -31,6 +32,8 @@ public class UICanvas : MonoBehaviourPunCallbacks
     public GameObject Singleplayergameobject;
     SinglePlayer[] singlePlayers;
 
+    public Dictionary<string, TMP_Text> playerScores;
+
     private void Awake()
     {
         instance = this;
@@ -38,6 +41,7 @@ public class UICanvas : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
+        playerScores = new Dictionary<string, TMP_Text>();
         singlePlayers = GameObject.FindObjectsOfType<SinglePlayer>();
     }
 
@@ -64,5 +68,6 @@ public class UICanvas : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.LoadLevel(1);
     }
+
 
 }

@@ -6759,6 +6759,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Singleplayer: 0
+  Tutorial: 0
 --- !u!1 &1933188772
 GameObject:
   m_ObjectHideFlags: 0

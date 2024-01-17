@@ -305,6 +305,8 @@ MonoBehaviour:
   CanShoot: 0
   projectilePrefab: {fileID: 0}
   shootingRate: 2
+  canshoott: 200
+  cannotshoot: 100
 --- !u!54 &-3557332427860060450
 Rigidbody:
   m_ObjectHideFlags: 0

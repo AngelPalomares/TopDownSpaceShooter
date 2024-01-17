@@ -649,14 +649,14 @@ MonoBehaviour:
   moveSpeed: 5
   bulletPrefab: {fileID: 8831263539094909697, guid: 5c553716b6d3d4b638418ae5973114cb, type: 3}
   bulletSpeed: 10
-  shootingInterval: 1
+  shootingInterval: 3
   maxHealth: 10
-  detectionRadius: 15
+  detectionRadius: 6
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
   safeDistance: 4
-  shootingRange: 10
+  shootingRange: 8
   Shootinglocaiton: {fileID: 6186182596552039097}
   rotationSpeed: 40
 --- !u!1 &7650601354581886998

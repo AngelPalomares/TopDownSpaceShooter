@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class Player : MonoBehaviourPunCallbacks
 {
@@ -29,6 +30,8 @@ public class Player : MonoBehaviourPunCallbacks
 
     public Canvas ui;
     public TMP_Text Name;
+
+    public int score;
 
     public void Start()
     {

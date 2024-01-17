@@ -67,28 +67,41 @@ public class FriendlyAi : MonoBehaviourPunCallbacks
 
     private void FaceTarget(Transform target)
     {
-        // Calculate the direction to the target
         Vector3 directionToTarget = (target.position - transform.position).normalized;
-
-        // Calculate the rotation needed to look at the target
         Quaternion lookRotation = Quaternion.LookRotation(directionToTarget);
 
-        // Since we are in a top-down view and we want to lock Y and Z rotations at 90 degrees,
-        // we first get the X rotation from the look rotation.
-        float xRotation = lookRotation.eulerAngles.x;
+        // Convert to Euler angles to manipulate individual axis rotations
+        Vector3 eulerRotation = lookRotation.eulerAngles;
 
-        // Adjust the xRotation if it goes beyond the range of -90 to 90 degrees.
-        xRotation = (xRotation > 180) ? xRotation - 360 : xRotation;
+        // Clamp the Y rotation between -90 and 90 degrees
+        eulerRotation.y = ClampAngle(eulerRotation.y, -90f, 90f);
 
-        // Now we create our new rotation using only the X component of the look rotation.
-        // We are assuming here that the 'up' direction for your sprites is along the global Z axis.
-        Quaternion targetRotation = Quaternion.Euler(xRotation, 90, 90);
+        // Ensure the Z rotation is within the 90s
+        eulerRotation.z = 90f;
 
-        // Slerp smoothly to the target rotation
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation,
-    Time.deltaTime * rotationSpeed);
+        // No need to clamp the X rotation as Quaternion.LookRotation already provides a 360-degree rotation capability
+
+        // Convert back to Quaternion
+        Quaternion constrainedRotation = Quaternion.Euler(eulerRotation);
+
+        // Rotate smoothly towards the target
+        transform.rotation = Quaternion.Slerp(transform.rotation, constrainedRotation, Time.deltaTime * rotationSpeed);
     }
 
+    // Utility method to clamp angles between -180 and 180 degrees
+    private float ClampAngle(float angle, float min, float max)
+    {
+        angle = NormalizeAngle(angle);
+        return Mathf.Clamp(angle, min, max);
+    }
+
+    // Normalize angles to be within -180 to 180 degrees range
+    private float NormalizeAngle(float angle)
+    {
+        while (angle > 180f) angle -= 360f;
+        while (angle < -180f) angle += 360f;
+        return angle;
+    }
 
 
     private void MoveTowardsTarget(Transform target)
@@ -97,6 +110,8 @@ public class FriendlyAi : MonoBehaviourPunCallbacks
         Vector3 newPosition = Vector3.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
         transform.position = newPosition;
     }
+
+
 
     private void Shoot()
     {

@@ -10,6 +10,7 @@ public class SinglePlayer : MonoBehaviour
 
     public bool Singleplayer = false;
     public bool Tutorial = false;
+    public bool GameRestart = false;
     private void Awake()
     {
         if (instance == null)

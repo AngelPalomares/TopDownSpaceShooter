@@ -59,6 +59,13 @@ MonoBehaviour:
   - UpdateScore
   - DisplayHighScore
   - UpdateScoreAcrossNetwork
+  - GameOver
+  - OnAllPlayersDestroyed
+  - ActivateGameOverUI
+  - PlayerHasDied
+  - ReloadGameLevel
+  - ResetGame
+  - ResetSpawners
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

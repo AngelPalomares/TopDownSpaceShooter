@@ -1776,6 +1776,7 @@ GameObject:
   - component: {fileID: 850500372}
   - component: {fileID: 850500371}
   - component: {fileID: 850500373}
+  - component: {fileID: 850500374}
   m_Layer: 0
   m_Name: GameManger
   m_TagString: Untagged
@@ -1900,6 +1901,19 @@ MonoBehaviour:
   sceneViewId: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &850500374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850500370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82066d4d01c0e4e98adaa406af86be93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deadPlayers: 0
 --- !u!1 &950826530
 GameObject:
   m_ObjectHideFlags: 0
@@ -3800,6 +3814,7 @@ GameObject:
   - component: {fileID: 1968975180}
   - component: {fileID: 1968975179}
   - component: {fileID: 1968975178}
+  - component: {fileID: 1968975183}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -3831,6 +3846,7 @@ MonoBehaviour:
   GameOverText: {fileID: 1186088589}
   Photon: {fileID: 0}
   Singleplayergameobject: {fileID: 0}
+  AllPlayersaredead: 0
 --- !u!114 &1968975179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3923,6 +3939,28 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1968975183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968975177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 2
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1992333559
 GameObject:
   m_ObjectHideFlags: 0

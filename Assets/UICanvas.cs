@@ -32,7 +32,12 @@ public class UICanvas : MonoBehaviourPunCallbacks
     public GameObject Singleplayergameobject;
     SinglePlayer[] singlePlayers;
 
-    public Dictionary<string, TMP_Text> playerScores;
+    private static int totalPlayers;
+    private static int deadPlayers = 0;
+
+    public bool AllPlayersaredead = false;
+
+    private static Dictionary<int, bool> playerAliveStatus = new Dictionary<int, bool>();
 
     private void Awake()
     {
@@ -41,14 +46,14 @@ public class UICanvas : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        playerScores = new Dictionary<string, TMP_Text>();
+        totalPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
+
         singlePlayers = GameObject.FindObjectsOfType<SinglePlayer>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
 
     }
 
@@ -66,8 +71,22 @@ public class UICanvas : MonoBehaviourPunCallbacks
 
     public void RestartTheGame()
     {
-        PhotonNetwork.LoadLevel(1);
+        photonView.RPC(nameof(ReloadGameLevel), RpcTarget.All);
     }
 
+
+    [PunRPC]
+    public void ReloadGameLevel()
+    {
+        SinglePlayer.instance.GameRestart = true;
+        PhotonNetwork.LoadLevel("Main Game");
+    }
+
+    [PunRPC]
+    public void GameOver()
+    {
+            GameOverPanel.SetActive(true);
+            GameOverText.text = "All players destroyed! Game Over!";
+    }
 
 }

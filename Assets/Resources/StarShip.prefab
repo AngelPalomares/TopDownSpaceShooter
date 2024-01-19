@@ -467,8 +467,8 @@ MonoBehaviour:
   m_prefab_player_bullet: {fileID: 5544838678656471585, guid: 5c553716b6d3d4b638418ae5973114cb, type: 3}
   m_move_speed: 4
   bulletSpeed: 15
-  PlayerHealth: 10
-  MaxPlayerHealth: 10
+  PlayerHealth: 1
+  MaxPlayerHealth: 1
   AmounttoHealh: 10
   Minx: -7.95
   Miny: -4.08
@@ -479,6 +479,7 @@ MonoBehaviour:
   ui: {fileID: 1061842088956922906}
   Name: {fileID: 4106848566516195985}
   score: 0
+  isAlive: 1
 --- !u!135 &5787161861011307996
 SphereCollider:
   m_ObjectHideFlags: 0

@@ -33,6 +33,8 @@ public class Player : MonoBehaviourPunCallbacks
 
     public int score;
 
+    public bool isAlive = true;
+
     public void Start()
     {
 
@@ -40,6 +42,7 @@ public class Player : MonoBehaviourPunCallbacks
 
 
         PlayerHealth = MaxPlayerHealth;
+
         if (photonView.IsMine)
         {
             Name.text = PhotonNetwork.NickName;
@@ -124,11 +127,16 @@ public class Player : MonoBehaviourPunCallbacks
 
                 if (PlayerHealth <= 0)
                 {
+                    isAlive = false;
+                    GameManager.Instance.PlayerDestroyed();
                     photonView.RPC("DeactivatePlayer", RpcTarget.AllBuffered);
                 }
             }
+            else
+            {
+                photonView.RPC("FlashPlayer", RpcTarget.All);
+            }
 
-            photonView.RPC("FlashPlayer", RpcTarget.All);
         }
     }
 

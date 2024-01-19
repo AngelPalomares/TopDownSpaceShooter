@@ -40,6 +40,8 @@ public class Spawners : MonoBehaviourPunCallbacks
     public float StartSecondSpawnertTime;
     private float SecondSecondbtwSpawns;
 
+    private static Dictionary<int, bool> playerAliveStatus = new Dictionary<int, bool>();
+
     void Start()
     {
         SpawnThePlayer();
@@ -47,6 +49,12 @@ public class Spawners : MonoBehaviourPunCallbacks
         {
             StartGame();
             SpawntheFriendlyAI();
+        }
+
+        if (SinglePlayer.instance.GameRestart)
+        {
+            StartGame();
+            SinglePlayer.instance.GameRestart = false;
         }
     }
 

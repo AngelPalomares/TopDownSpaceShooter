@@ -13,7 +13,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     [Header("Parameter")]
     public float m_move_speed = 1;
-    public float bulletSpeed = 10f; // Bullet speed
+    public float bulletSpeed = 10f;
     public float PlayerHealth = 4;
     public float MaxPlayerHealth = 10;
 
@@ -21,12 +21,12 @@ public class Player : MonoBehaviourPunCallbacks
 
     public float Minx, Miny, Maxx, Maxy;
 
-    private float damageCooldown = 1.0f; // Cooldown time in seconds
-    private float lastDamageTime = 0; // Time when last damage was taken
+    private float damageCooldown = 1.0f; 
+    private float lastDamageTime = 0; 
 
-    public MeshRenderer playerMeshRenderer; // Reference to the player's mesh renderer
-    public Color hitColor = Color.red; // Color to flash when hit
-    private Color originalColor; // To store the original color
+    public MeshRenderer playerMeshRenderer;
+    public Color hitColor = Color.red; 
+    private Color originalColor; 
 
     public Canvas ui;
     public TMP_Text Name;
@@ -67,7 +67,6 @@ public class Player : MonoBehaviourPunCallbacks
 
     private void UpdateTextRotation()
     {
-        // Assuming the camera is always looking down and only rotates around the Y-axis
         Vector3 cameraRotation = Camera.main.transform.rotation.eulerAngles;
         Name.transform.rotation = Quaternion.Euler(0, cameraRotation.y, 0);
     }
@@ -85,12 +84,12 @@ public class Player : MonoBehaviourPunCallbacks
         {
             // Look at cursor in 2D mode
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane));
-            mousePosition.z = transform.position.z; // Keep the z-position consistent with the player's z-position
+            mousePosition.z = transform.position.z; 
             Vector3 lookDirection = mousePosition - transform.position;
-            if (lookDirection.sqrMagnitude > 0.01f) // Check to avoid LookAt when mouse is very close to player
+            if (lookDirection.sqrMagnitude > 0.01f) 
             {
                 transform.LookAt(mousePosition);
-                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 90); // Maintain z-rotation at 90 degrees
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 90);
             }
 
             float verticalInput = Input.GetAxis("Vertical");

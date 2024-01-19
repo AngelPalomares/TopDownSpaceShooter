@@ -15,7 +15,6 @@ public class PlayerBullet : MonoBehaviourPunCallbacks
 	//
 	void Update()
 	{
-        // Move the bullet forward in the direction it's facing
         transform.position += transform.forward * m_move_speed * Time.deltaTime;
 
         // Existing lifetime logic
@@ -28,7 +27,7 @@ public class PlayerBullet : MonoBehaviourPunCallbacks
 
     public void DeleteObject()
     {
-        // Ensure that the bullet is destroyed network-wide
+
         if (photonView.IsMine)
         {
             PhotonNetwork.Destroy(gameObject);
@@ -42,7 +41,7 @@ public class PlayerBullet : MonoBehaviourPunCallbacks
             EnemyShipScript enemy = other.gameObject.GetComponent<EnemyShipScript>();
             if (enemy != null && photonView.IsMine)
             {
-                // Request destruction of the enemy ship via an RPC
+
                 enemy.photonView.RPC("RequestDestruction", RpcTarget.AllViaServer);
                 PhotonNetwork.Destroy(gameObject);
             }

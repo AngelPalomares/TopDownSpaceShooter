@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void UpdateTotalPlayers()
     {
         totalPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
-        // Optionally, trigger game start logic if conditions are met
+
     }
 
     public void PlayerDestroyed()

@@ -46,7 +46,7 @@ public class Multiplayer : MonoBehaviourPunCallbacks
         loadingPanel.SetActive(false);
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         
@@ -72,7 +72,7 @@ public class Multiplayer : MonoBehaviourPunCallbacks
         }
         else
         {
-            // Optionally, display a message to the user indicating that both fields are required.
+
             Debug.Log("Both Name and Room Name are required to create a room.");
             StartCoroutine(Erroroncreateroom());
         }
@@ -146,8 +146,8 @@ public class Multiplayer : MonoBehaviourPunCallbacks
     private void CreateRoom()
     {
         RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = 2; // Set the max players for your room
-        string randomRoomName = "Room_" + System.Guid.NewGuid().ToString(); // Generate a random room name
+        roomOptions.MaxPlayers = 2; 
+        string randomRoomName = "Room_" + System.Guid.NewGuid().ToString(); 
 
         PhotonNetwork.CreateRoom(randomRoomName, roomOptions);
     }

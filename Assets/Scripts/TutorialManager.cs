@@ -18,9 +18,9 @@ public class TutorialManager : MonoBehaviourPunCallbacks
 
     private Vector3 lastMousePosition;
     private float mouseMoveDistance = 0f;
-    private float mouseMoveThreshold = 100f; // Adjust this threshold as needed
+    private float mouseMoveThreshold = 100f;
 
-    // Start is called before the first frame update
+
     void Start()
     {
         SpawnThePlayer();
@@ -48,7 +48,7 @@ public class TutorialManager : MonoBehaviourPunCallbacks
                     StartCoroutine(ShootingStep());
                 break;
             case 6:
-                if (Input.GetMouseButtonDown(0)) // Left mouse button
+                if (Input.GetMouseButtonDown(0))
                     StartCoroutine(AimingStep());
                 break;
             case 7:
@@ -108,7 +108,7 @@ public class TutorialManager : MonoBehaviourPunCallbacks
     {
         Text.text = "Great! To aim, move your mouse.";
 
-        // Reset mouse tracking values
+
         lastMousePosition = Input.mousePosition;
         mouseMoveDistance = 0f;
 

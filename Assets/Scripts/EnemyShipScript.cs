@@ -6,20 +6,20 @@ using Photon.Pun;
 
 public class EnemyShipScript : MonoBehaviourPunCallbacks
 {
-    public Transform[] playerTransforms; // Assign this in the inspector with both player transforms
+    public Transform[] playerTransforms;
     public float moveSpeed = 5f;
     public AudioClip DeathSound;
     public GameObject HealthPickup;
 
     public GameObject Shooting;
 
-    private Transform targetPlayerTransform; // To keep track of the nearest player
-    public float healthPickupSpawnProbability = 0.5f; // 50% chance to spawn by default
+    private Transform targetPlayerTransform; 
+    public float healthPickupSpawnProbability = 0.5f; 
 
     public bool CanShoot;
 
-    public GameObject projectilePrefab; // Assign this in the inspector
-    public float shootingRate = 2f; // Enemy shoots every 2 seconds
+    public GameObject projectilePrefab; 
+    public float shootingRate = 2f; 
 
     private float shootTimer;
 
@@ -31,11 +31,11 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
         if (playerTransforms == null || playerTransforms.Length == 0)
         {
             playerTransforms = FindObjectsOfType<Player>()
-                .Where(player => player.gameObject.activeSelf) // Only consider active players
+                .Where(player => player.gameObject.activeSelf) 
                 .Select(player => player.transform)
                 .ToArray();
         }
-        // Initially set the target player
+
         FindNearestPlayer();
     }
 
@@ -43,7 +43,7 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
     {
         if (playerTransforms != null && playerTransforms.Length > 0)
         {
-            FindNearestPlayer(); // Update the nearest player each frame
+            FindNearestPlayer();
 
             if (targetPlayerTransform != null)
             {
@@ -80,7 +80,7 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
                 }
             }
         }
-        targetPlayerTransform = nearestPlayer; // Update the target player
+        targetPlayerTransform = nearestPlayer;
     }
 
 
@@ -97,7 +97,6 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
         {
             photonView.RPC("PlayDeathSound", RpcTarget.All);
 
-            // Determine whether to spawn health pickup based on probability
             if (Random.value < healthPickupSpawnProbability)
             {
                 Quaternion spawnRotation = Quaternion.Euler(0, -180, 0);
@@ -110,7 +109,7 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
 
     private void MoveTowardsTargetPlayer()
     {
-        // Check if the target player transform is still valid
+
         if (targetPlayerTransform != null)
         {
             Vector3 directionToPlayer = (new Vector3(targetPlayerTransform.position.x, targetPlayerTransform.position.y, transform.position.z) - transform.position).normalized;
@@ -121,7 +120,7 @@ public class EnemyShipScript : MonoBehaviourPunCallbacks
 
     private void RotateTowardsPlayer()
     {
-        // Check if the target player transform is still valid
+
         if (targetPlayerTransform != null)
         {
             Vector3 direction = new Vector3(targetPlayerTransform.position.x, targetPlayerTransform.position.y, transform.position.z) - transform.position;
